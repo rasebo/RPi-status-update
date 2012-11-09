@@ -22,8 +22,6 @@ stats_file="$HOME/.rpiupdate/rpi-stats-file"
 email_addr="email@domain.com"
 icmp_check_addr="google.com"
 ip_scan_range="192.168.1.0/24"
-external_ip=`$wget -q -t 5 --output-document=- "http://automation.whatismyip.com/n09230945.asp"` > /dev/null 2>&1
-internal_ip=`$hostname -I`
 memory_total=`$cat /proc/meminfo | awk ' /MemTotal/ { print $2 } '`
 memory_free=`$cat /proc/meminfo | awk ' /MemFree/ { print $2 } '`
 #icmp status check command
@@ -44,6 +42,9 @@ until [ $status -eq 0 ]; do
     $sleep_cmd 30
 done
 fi
+#define internal and external ip vars
+external_ip=`$wget -q -t 5 --output-document=- "http://automation.whatismyip.com/n09230945.asp"` > /dev/null 2>&1
+internal_ip=`$hostname -I`
 #build the file for emailing to $email_addr
 #$echo -n "" > "$stats_file"
 $echo "Un fleac, m-au restartat..." > "$stats_file"
