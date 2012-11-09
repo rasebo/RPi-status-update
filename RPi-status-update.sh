@@ -5,7 +5,7 @@
 
 #files, email address, ip check address
 #script_location="$HOME/.rpiupdate/external_ip.sh"
-log_file="$HOME/.rpiupdate/RPi-status-update.log"
+log_file_offline="$HOME/.rpiupdate/RPi-offline.log"
 stats_file="$HOME/.rpiupdate/rpi-stats-file"
 email_addr="email@domain.com"
 icmp_check_addr="google.com"
@@ -24,16 +24,18 @@ status=`$ping -c 1 $icmp_check_addr 2>&1 | $egrep_cmd -c "\<unknown\>|\<unreacha
 # Search for .rpiupdate folder and create it together with log file and stat file
 if [ ! -d $HOME/.rpiupdate/ ]; then
     mkdir $HOME/.rpiupdate/
-    touch $log_file
+    touch $log_file_offline
+    touch $log_file_activity
+    touch $log_file_error
     touch $stats_file
 fi
 #if there is no icmp reply, add separator to log file and until there's icmp reply, add a log entry every 30 seconds
 if [ $status -eq 1 ]; then
-    echo "=================================" >> $log_file 
+    echo "=================================" >> $log_file_offline 
 until [ $status -eq 0 ]; do
     status=`$ping -c 1 $icmp_check_addr 2>&1 | $egrep_cmd -c "\<unknown\>|\<unreachable\>"`
-    $echo -n "Offline - " >> $log_file
-    $date >> $log_file
+    $echo -n "Offline - " >> $log_file_offline
+    $date >> $log_file_offline
     $sleep_cmd 30
 done
 fi
@@ -46,9 +48,9 @@ $echo EXTERNAL IP: "$external_ip" >> "$stats_file"
 $echo HOSTNAME: `/bin/hostname` >> "$stats_file"
 $echo KERNEL: `/bin/uname -s -v -r -m` >> "$stats_file"
 $echo HOSTS UP ARE: >> "$stats_file"
-$nmap -oG -sP $ip_scan_range >> "$stats_file" 
+$nmap -sP $ip_scan_range >> "$stats_file"  
 #mail logs and stat info
 $mail -s "RPi - New IP information" $email_addr < "$stats_file"
-$mail -s "RPi - Offline logs" $email_addr < "$log_file" > /dev/null 2>&1 #don't need the output, redirect to /dev/null is for when the logfile is empty
+$mail -s "RPi - Offline logs" $email_addr < "$log_file_offline" > /dev/null 2>&1 #redirect output for troubleshooting
 #done
 exit 0
