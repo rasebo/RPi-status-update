@@ -17,7 +17,7 @@ who="/usr/bin/w"
 cat="/bin/cat"
 #files, email address, ip check address
 #script_location="$HOME/.rpiupdate/external_ip.sh"
-log_file_offline="$HOME/.rpiupdate/RPi-offline.log"
+log_file_offline="$HOME/.rpiupdate/rpi-offline.log"
 stats_file="$HOME/.rpiupdate/rpi-stats-file"
 email_addr="email@domain.com"
 icmp_check_addr="google.com"
