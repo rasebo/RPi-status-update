@@ -7,8 +7,9 @@
 #script_location="$HOME/.rpiupdate/external_ip.sh"
 log_file="$HOME/.rpiupdate/RPi-status-update.log"
 stats_file="$HOME/.rpiupdate/rpi-stats-file"
-email_addr="your.email.addr@domain.com"
+email_addr="email@domain.com"
 icmp_check_addr="google.com"
+ip_scan_range="192.168.1.0/24"
 #variables for binary locations
 wget="/usr/bin/wget"
 echo="/bin/echo"
@@ -17,6 +18,7 @@ ping="/bin/ping"
 egrep_cmd="/bin/egrep"
 date="/bin/date"
 sleep_cmd="/bin/sleep"
+nmap="/usr/bin/nmap"
 #icmp status check command
 status=`$ping -c 1 $icmp_check_addr 2>&1 | $egrep_cmd -c "\<unknown\>|\<unreachable\>"`
 # Search for .rpiupdate folder and create it together with log file and stat file
@@ -43,6 +45,8 @@ $echo "" >> "$stats_file"
 $echo EXTERNAL IP: "$external_ip" >> "$stats_file"
 $echo HOSTNAME: `/bin/hostname` >> "$stats_file"
 $echo KERNEL: `/bin/uname -s -v -r -m` >> "$stats_file"
+$echo HOSTS UP ARE: >> "$stats_file"
+$nmap -oG -sP $ip_scan_range >> "$stats_file" 
 #mail logs and stat info
 $mail -s "RPi - New IP information" $email_addr < "$stats_file"
 $mail -s "RPi - Offline logs" $email_addr < "$log_file" > /dev/null 2>&1 #don't need the output, redirect to /dev/null is for when the logfile is empty
