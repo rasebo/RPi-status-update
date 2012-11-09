@@ -9,8 +9,6 @@ log_file="$HOME/.rpiupdate/RPi-status-update.log"
 stats_file="$HOME/.rpiupdate/rpi-stats-file"
 email_addr="your.email.addr@domain.com"
 icmp_check_addr="google.com"
-#--
-
 #variables for binary locations
 wget="/usr/bin/wget"
 echo="/bin/echo"
@@ -19,16 +17,15 @@ ping="/bin/ping"
 egrep_cmd="/bin/egrep"
 date="/bin/date"
 sleep_cmd="/bin/sleep"
-#--
-
+#icmp status check command
+status=`$ping -c 1 $icmp_check_addr 2>&1 | $egrep_cmd -c "\<unknown\>|\<unreachable\>"`
+# Search for .rpiupdate folder and create it together with log file and stat file
 if [ ! -d $HOME/.rpiupdate/ ]; then
     mkdir $HOME/.rpiupdate/
     touch $log_file
     touch $stats_file
 fi
-
-status=`$ping -c 1 $icmp_check_addr 2>&1 | $egrep_cmd -c "\<unknown\>|\<unreachable\>"`
-
+#if there is no icmp reply, add separator to log file and until there's icmp reply, add a log entry every 30 seconds
 if [ $status -eq 1 ]; then
     echo "=================================" >> $log_file 
 until [ $status -eq 0 ]; do
@@ -38,7 +35,7 @@ until [ $status -eq 0 ]; do
     $sleep_cmd 30
 done
 fi
-
+#create the file whoose contents will be emailed to $email_addr
 external_ip=`$wget -q -t 5 --output-document=- "http://automation.whatismyip.com/n09230945.asp"` > /dev/null 2>&1
 #$echo -n "" > "$stats_file"
 $echo "Un fleac, m-au restartat..." > "$stats_file"
@@ -46,7 +43,8 @@ $echo "" >> "$stats_file"
 $echo EXTERNAL IP: "$external_ip" >> "$stats_file"
 $echo HOSTNAME: `/bin/hostname` >> "$stats_file"
 $echo KERNEL: `/bin/uname -s -v -r -m` >> "$stats_file"
+#mail logs and stat info
 $mail -s "RPi - New IP information" $email_addr < "$stats_file"
 $mail -s "RPi - Offline logs" $email_addr < "$log_file" > /dev/null 2>&1 #don't need the output, redirect to /dev/null is for when the logfile is empty
-
+#done
 exit 0
