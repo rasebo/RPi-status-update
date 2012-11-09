@@ -25,8 +25,6 @@ status=`$ping -c 1 $icmp_check_addr 2>&1 | $egrep_cmd -c "\<unknown\>|\<unreacha
 if [ ! -d $HOME/.rpiupdate/ ]; then
     mkdir $HOME/.rpiupdate/
     touch $log_file_offline
-    touch $log_file_activity
-    touch $log_file_error
     touch $stats_file
 fi
 #if there is no icmp reply, add separator to log file and until there's icmp reply, add a log entry every 30 seconds
@@ -51,6 +49,6 @@ $echo HOSTS UP ARE: >> "$stats_file"
 $nmap -sP $ip_scan_range >> "$stats_file"  
 #mail logs and stat info
 $mail -s "RPi - New IP information" $email_addr < "$stats_file"
-$mail -s "RPi - Offline logs" $email_addr < "$log_file_offline" > /dev/null 2>&1 #redirect output for troubleshooting
+$mail -s "RPi - Offline logs" $email_addr < "$log_file_offline" > /dev/null 2>&1 #don't need the output, redirect to /dev/null is for when the logfile is empty 
 #done
 exit 0
