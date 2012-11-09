@@ -4,9 +4,9 @@
 #modify the vars below with your data (log file, stats file, email, binary paths)
 
 #files, email address, ip check address
-#script_location="$HOME/external_ip.sh"
-log_file="$HOME/RPi-status-update.log"
-stats_file="/tmp/rpi-stats-file"
+#script_location="$HOME/.rpiupdate/external_ip.sh"
+log_file="$HOME/.rpiupdate/RPi-status-update.log"
+stats_file="$HOME/.rpiupdate/rpi-stats-file"
 email_addr="your.email.addr@domain.com"
 icmp_check_addr="google.com"
 #--
@@ -20,6 +20,12 @@ egrep_cmd="/bin/egrep"
 date="/bin/date"
 sleep_cmd="/bin/sleep"
 #--
+
+if [ ! -d $HOME/.rpiupdate/ ]; then
+    mkdir $HOME/.rpiupdate/
+    touch $log_file
+    touch $stats_file
+fi
 
 status=`$ping -c 1 $icmp_check_addr 2>&1 | $egrep_cmd -c "\<unknown\>|\<unreachable\>"`
 
@@ -36,7 +42,7 @@ fi
 external_ip=`$wget -q -t 5 --output-document=- "http://automation.whatismyip.com/n09230945.asp"` > /dev/null 2>&1
 #$echo -n "" > "$stats_file"
 $echo "Un fleac, m-au restartat..." > "$stats_file"
-$echo "..." >> "$stats_file"
+$echo "" >> "$stats_file"
 $echo EXTERNAL IP: "$external_ip" >> "$stats_file"
 $echo HOSTNAME: `/bin/hostname` >> "$stats_file"
 $echo KERNEL: `/bin/uname -s -v -r -m` >> "$stats_file"
