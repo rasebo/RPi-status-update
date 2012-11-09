@@ -34,7 +34,7 @@ if [ ! -d $HOME/.rpiupdate/ ]; then
 fi
 #if there is no icmp reply, add separator to log file and until there's icmp reply, add a log entry every 30 seconds
 if [ $status -eq 1 ]; then
-    echo "=================================" >> $log_file_offline 
+    echo "===========================" >> $log_file_offline 
 until [ $status -eq 0 ]; do
     status=`$ping -c 1 $icmp_check_addr 2>&1 | $egrep_cmd -c "\<unknown\>|\<unreachable\>"`
     $echo -n "Offline - " >> $log_file_offline
