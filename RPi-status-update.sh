@@ -3,7 +3,7 @@
 #emails are being sent to an address with both offline logs and new system info
 #modify the vars below with your data (log file, stats file, email, binary paths)
 
-#files, email addr, ip check addr
+#files, email address, ip check address
 #script_location="$HOME/external_ip.sh"
 log_file="$HOME/RPi-status-update.log"
 stats_file="/tmp/rpi-stats-file"
