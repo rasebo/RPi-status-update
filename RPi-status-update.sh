@@ -74,6 +74,6 @@ if [ ! -z "$log_file_offline"  ];then
    $echo "$log_file_offline" >> "$stats_file"
 fi 
 #mail logs and stat info
-#$mail -s "RPi - Status" $email_addr < "$stats_file"
+$mail -s "RPi - Status" $email_addr < "$stats_file"
 #done
 exit 0
