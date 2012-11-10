@@ -6,7 +6,3 @@ I'm using it on my Raspberry Pi Raspbian, can be used on any distro as long as e
 
 Prereqs: MTA setup and nmap
 
-2DOs:
-
--email only the latest offline logs, and only if connectivity was lost, include logs in status update mail
-
