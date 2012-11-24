@@ -1,10 +1,8 @@
 #!/bin/bash
 
-# modify script/create new script that checks for new ip every 10 mins and sends email if change is detected
-
-#simple script for checking your RPi's external IP address 
-#emails are being sent to an address with both offline logs and new system info
-#modify the vars below with your data (log file, stats file, email, binary paths)
+#quick & dirty script for checking your RPi's external IP address on reboot
+#sends email to an address containing internal ip, external ip, sys info and local neighbors
+#modify the vars below with your data (file locations, email, ip range, binary paths)
 
 #binary locations
 wget="/usr/bin/wget"
